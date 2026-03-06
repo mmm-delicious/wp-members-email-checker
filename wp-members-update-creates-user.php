@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MMM Username Registration API
  * Description: Registers users via REST API for Elementor forms with WP-Members activation.
- * Version: 3.1
+ * Version: 3.2
  * Author: MMM Delicious
  * Developer: Mark McDonnell
  * Requires at least: 5.0
@@ -21,6 +21,15 @@ add_action('rest_api_init', function () {
 });
 
 function mmm_rest_register_user(WP_REST_Request $request) {
+    // Rate limiting: max 5 requests per IP per minute using transients
+    $ip  = sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+    $key = 'mmm_reg_rate_' . md5($ip);
+    $hits = (int) get_transient($key);
+    if ($hits >= 5) {
+        return new WP_REST_Response(['success' => true, 'message' => 'Silent success'], 200);
+    }
+    set_transient($key, $hits + 1, 60);
+
     $json_data = $request->get_json_params();
     $form_data = $request->get_body_params();
     $data = !empty($json_data) ? $json_data : $form_data;
@@ -39,7 +48,7 @@ function mmm_rest_register_user(WP_REST_Request $request) {
     $first     = sanitize_text_field($data['first_name'] ?? '');
     $last      = sanitize_text_field($data['last_name'] ?? '');
 
-    if (!$email || !$first || !$last) {
+    if (!$email || !is_email($email) || !$first || !$last) {
         return new WP_REST_Response(['success' => true, 'message' => 'Silent success for missing fields'], 200);
     }
 
