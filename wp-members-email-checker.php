@@ -1,11 +1,16 @@
 <?php
 /**
- Plugin Name: WP-Members Email Validator
- Description: Validates email address format, blocks institutional domains, and ensures confirmation email matches.
- * Version: 1.0
+ * Plugin Name: WP-Members Email Validator
+ * Description: Validates email address format, blocks institutional domains, and ensures confirmation email matches.
+ * Version: 1.1
  * Author: MMM Delicious
  * Developer: Mark McDonnell
+ * Requires at least: 5.0
+ * Requires PHP: 7.4
+ * Tested up to: 6.7
  */
+
+defined( 'ABSPATH' ) || exit;
 
 // Backward-compatible str_ends_with for PHP < 8
 if ( ! function_exists( 'str_ends_with' ) ) {
