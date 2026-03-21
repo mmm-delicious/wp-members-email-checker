@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP-Members Email Validator
  * Description: Validates email address format, blocks institutional domains, and ensures confirmation email matches.
- * Version: 1.1.2
+ * Version: 1.1.4
  * Author: MMM Delicious
  * Developer: Mark McDonnell
  * Requires at least: 5.0
@@ -14,11 +14,12 @@ defined( 'ABSPATH' ) || exit;
 
 // Auto-updates via GitHub
 require_once plugin_dir_path(__FILE__) . 'lib/plugin-update-checker/plugin-update-checker.php';
-\YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-    'https://github.com/mmm-delicious/wp-members-email-checker/',
+$mmm_updater = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+    'https://github.com/mmm-delicious/wp-members-email-validator/',
     __FILE__,
-    'wp-members-email-checker'
+    'wp-members-email-validator'
 );
+$mmm_updater->setCheckPeriod(48);
 
 // Backward-compatible str_ends_with for PHP < 8
 if ( ! function_exists( 'str_ends_with' ) ) {
